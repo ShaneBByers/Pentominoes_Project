@@ -12,21 +12,21 @@ import UIKit
 class Piece {
     var originalPoint : CGPoint
     
-    private var imageView : UIImageView
-    private var imageSize : CGSize
-    private var rotationCount : Int = 0
-    private var flipped : Bool = false
-    private let maxRotations = 4
+    fileprivate var imageView : UIImageView
+    fileprivate var imageSize : CGSize
+    fileprivate var rotationCount : Int = 0
+    fileprivate var flipped : Bool = false
+    fileprivate let maxRotations = 4
     
     init(imageFilename: String) {
-        let image = UIImage(imageLiteral: imageFilename)
+        let image = UIImage(named: imageFilename)!
         imageSize = image.size
         imageView = UIImageView(image: image)
         imageView.frame = CGRect(origin: CGPoint.zero, size: image.size)
         originalPoint = CGPoint.zero
     }
     
-    func setCenter(x: Double, y: Double) {
+    func setCenter(_ x: Double, y: Double) {
         imageView.center = CGPoint(x: x, y: y)
     }
     

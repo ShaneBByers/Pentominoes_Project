@@ -48,7 +48,7 @@ class ViewController: UIViewController {
     
     var hintPiecesShown = 0
     
-    var currentOrientation = UIDevice.currentDevice().orientation
+    var currentOrientation = UIDevice.current.orientation
     
     // MARK: - Initializer Functions
     //
@@ -76,7 +76,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         for piece in pieces {
-            piece.getImageView().userInteractionEnabled = true
+            piece.getImageView().isUserInteractionEnabled = true
             
             let doubleTapRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.pieceDoubleTapped(_:)))
             doubleTapRecognizer.numberOfTapsRequired = 2
@@ -84,7 +84,7 @@ class ViewController: UIViewController {
             
             let singleTapRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.pieceSingleTapped(_:)))
             singleTapRecognizer.numberOfTapsRequired = 1
-            singleTapRecognizer.requireGestureRecognizerToFail(doubleTapRecognizer)
+            singleTapRecognizer.require(toFail: doubleTapRecognizer)
             piece.getImageView().addGestureRecognizer(singleTapRecognizer)
             
             let panRecognizer = UIPanGestureRecognizer(target: self, action: #selector(ViewController.piecePanned(_:)))
@@ -98,22 +98,22 @@ class ViewController: UIViewController {
     
     // MARK: - Segues
     //
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let identifier = segue.identifier {
             switch identifier {
             case "ShowHintSegue":
                 if hintPiecesShown < pieces.count {
                     hintPiecesShown += 1
                 }
-                if let hintViewController = segue.destinationViewController as? HintViewController {
+                if let hintViewController = segue.destination as? HintViewController {
                     var hintPieces : [UIImageView] = []
                     for i in 0..<hintPiecesShown {
-                        let newPieceImage = UIImageView(image: UIImage(imageLiteral: boardModel.pieceFilenameAtIndex(i)))
+                        let newPieceImage = UIImageView(image: UIImage(named: boardModel.pieceFilenameAtIndex(i))!)
                         hintPieces.append(newPieceImage)
                     }
                     hintViewController.configureWithBoard(boardImages[boardNumber], atIndex: boardNumber, withPieces: hintPieces, usingBoardModel: boardModel)
                     hintViewController.dismissCompletionBlock = {
-                        self.dismissViewControllerAnimated(true, completion: nil)
+                        self.dismiss(animated: true, completion: nil)
                     }
                 }
                 
@@ -124,19 +124,19 @@ class ViewController: UIViewController {
     
     // MARK: - Piece Interactions
     //
-    func pieceSingleTapped(recognizer: UITapGestureRecognizer) {
+    func pieceSingleTapped(_ recognizer: UITapGestureRecognizer) {
         
         if let pieceView = recognizer.view {
             if pieceView.superview == self.boardImage {
                 hintPiecesShown = 0
-                hintButton.enabled = true
-                UIView.animateWithDuration(1, animations: {
+                hintButton.isEnabled = true
+                UIView.animate(withDuration: 1, animations: {
                     for piece in self.pieces {
                         if piece.getImageView() == pieceView {
                             if piece.isFlipped() {
-                                pieceView.transform = CGAffineTransformRotate(pieceView.transform, CGFloat(M_PI/(-2.0)))
+                                pieceView.transform = pieceView.transform.rotated(by: CGFloat(M_PI/(-2.0)))
                             } else {
-                                pieceView.transform = CGAffineTransformRotate(pieceView.transform, CGFloat(M_PI/2.0))
+                                pieceView.transform = pieceView.transform.rotated(by: CGFloat(M_PI/2.0))
                             }
                         }
                     }
@@ -154,20 +154,20 @@ class ViewController: UIViewController {
         
     }
     
-    func pieceDoubleTapped(recognizer: UITapGestureRecognizer) {
+    func pieceDoubleTapped(_ recognizer: UITapGestureRecognizer) {
 
         
         if let pieceView = recognizer.view {
             if pieceView.superview == self.boardImage {
                 hintPiecesShown = 0
-                hintButton.enabled = true
-                UIView.animateWithDuration(1, animations: {
+                hintButton.isEnabled = true
+                UIView.animate(withDuration: 1, animations: {
                     for piece in self.pieces {
                         if piece.getImageView() == pieceView {
                             if piece.rotations() % 2 == 0 {
-                                pieceView.transform = CGAffineTransformScale(pieceView.transform,1.0,-1.0)
+                                pieceView.transform = pieceView.transform.scaledBy(x: 1.0,y: -1.0)
                             } else {
-                                pieceView.transform = CGAffineTransformScale(pieceView.transform,-1.0,1.0)
+                                pieceView.transform = pieceView.transform.scaledBy(x: -1.0,y: 1.0)
                             }
                         }
                     }
@@ -183,35 +183,35 @@ class ViewController: UIViewController {
         }
     }
     
-    func piecePanned(recognizer: UIPanGestureRecognizer) {
+    func piecePanned(_ recognizer: UIPanGestureRecognizer) {
         
         let magnificationFactor : CGFloat = 2
         
-        let animationSeconds : NSTimeInterval = 1
+        let animationSeconds : TimeInterval = 1
         
         switch recognizer.state {
-        case .Began:
+        case .began:
             if let pieceView = recognizer.view {
-                let pointInSuperview = recognizer.locationInView(self.view)
+                let pointInSuperview = recognizer.location(in: self.view)
                 pieceView.frame = CGRect(origin: pointInSuperview, size: pieceView.frame.size)
                 self.view.addSubview(pieceView)
-                pieceView.transform = CGAffineTransformScale(pieceView.transform, magnificationFactor, magnificationFactor)
+                pieceView.transform = pieceView.transform.scaledBy(x: magnificationFactor, y: magnificationFactor)
                 pieceView.center = pointInSuperview
             }
-        case .Changed:
-            let translation = recognizer.translationInView(self.view)
+        case .changed:
+            let translation = recognizer.translation(in: self.view)
             
             if let pieceView = recognizer.view {
                 let newCenter = CGPoint(x: pieceView.center.x + translation.x, y: pieceView.center.y + translation.y)
                 pieceView.center = newCenter
-                recognizer.setTranslation(CGPointZero, inView: self.view)
+                recognizer.setTranslation(CGPoint.zero, in: self.view)
             }
-        case .Ended:
+        case .ended:
             if let pieceView = recognizer.view {
                 
-                pieceView.transform = CGAffineTransformScale(pieceView.transform, 0.5, 0.5)
+                pieceView.transform = pieceView.transform.scaledBy(x: 0.5, y: 0.5)
                 
-                let locationInBoardView = self.view.convertPoint(pieceView.center, toView: self.boardImage)
+                let locationInBoardView = self.view.convert(pieceView.center, to: self.boardImage)
                 
                 if (locationInBoardView.x >= self.boardImage.bounds.minX &&
                     locationInBoardView.x <= self.boardImage.bounds.maxX &&
@@ -220,10 +220,10 @@ class ViewController: UIViewController {
                     boardNumber != 0 {
                     
                     hintPiecesShown = 0
-                    hintButton.enabled = true
-                    resetButton.enabled = true
+                    hintButton.isEnabled = true
+                    resetButton.isEnabled = true
                     
-                    pieceView.frame.origin = self.boardImage.convertPoint(pieceView.frame.origin, fromView: pieceView.superview)
+                    pieceView.frame.origin = self.boardImage.convert(pieceView.frame.origin, from: pieceView.superview)
                     
                     self.boardImage.addSubview(pieceView)
                     
@@ -231,35 +231,35 @@ class ViewController: UIViewController {
 
                 } else {
                     
-                    resetButton.enabled = false
+                    resetButton.isEnabled = false
                     
                     for piece in pieces {
                         if piece.getImageView() == pieceView {
-                           UIView.animateWithDuration(animationSeconds, animations: {
-                            pieceView.transform = CGAffineTransformIdentity
-                            pieceView.center = self.view.convertPoint(piece.originalPoint, fromView: self.piecesView)
+                           UIView.animate(withDuration: animationSeconds, animations: {
+                            pieceView.transform = CGAffineTransform.identity
+                            pieceView.center = self.view.convert(piece.originalPoint, from: self.piecesView)
                             }, completion: { (true) in
-                                pieceView.frame = CGRect(origin: self.piecesView.convertPoint(pieceView.frame.origin, fromView: pieceView.superview), size: pieceView.frame.size)
+                                pieceView.frame = CGRect(origin: self.piecesView.convert(pieceView.frame.origin, from: pieceView.superview), size: pieceView.frame.size)
                                 self.piecesView.addSubview(pieceView)
                            })
                         }
                         if piece.getImageView().superview == self.boardImage {
-                            resetButton.enabled = true
+                            resetButton.isEnabled = true
                         }
                     }
                 }
             }
-        case .Cancelled:
+        case .cancelled:
             
             if let pieceView = recognizer.view {
-                pieceView.transform = CGAffineTransformIdentity
+                pieceView.transform = CGAffineTransform.identity
                 
                 for piece in pieces {
                     if piece.getImageView() == pieceView {
-                        UIView.animateWithDuration(animationSeconds, animations: {
-                            pieceView.center = self.view.convertPoint(piece.originalPoint, fromView: self.piecesView)
+                        UIView.animate(withDuration: animationSeconds, animations: {
+                            pieceView.center = self.view.convert(piece.originalPoint, from: self.piecesView)
                             }, completion: { (true) in
-                                pieceView.frame = CGRect(origin: self.piecesView.convertPoint(pieceView.frame.origin, fromView: pieceView.superview), size: pieceView.frame.size)
+                                pieceView.frame = CGRect(origin: self.piecesView.convert(pieceView.frame.origin, from: pieceView.superview), size: pieceView.frame.size)
                                 self.piecesView.addSubview(pieceView)
                         })
                     }
@@ -271,21 +271,21 @@ class ViewController: UIViewController {
     
     // MARK: - Internal Functions
     //
-    func snapPieceToBoardView(pieceView : UIView) {
+    func snapPieceToBoardView(_ pieceView : UIView) {
         
-        let animationSeconds : NSTimeInterval = 0.5
+        let animationSeconds : TimeInterval = 0.5
         
-        UIView.animateWithDuration(animationSeconds, animations: {
+        UIView.animate(withDuration: animationSeconds, animations: {
             var cellNumberX = 0
             var cellNumberY = 0
             
-            let origin = self.boardImage.convertPoint(pieceView.frame.origin, fromView: pieceView.superview)
-            if Double(origin.x) % Double(self.boardCellSize) > Double(self.boardCellSize)/2.0 {
+            let origin = self.boardImage.convert(pieceView.frame.origin, from: pieceView.superview)
+            if Double(origin.x).truncatingRemainder(dividingBy: Double(self.boardCellSize)) > Double(self.boardCellSize)/2.0 {
                 cellNumberX = (Int(origin.x)/self.boardCellSize) + 1
             } else {
                 cellNumberX = (Int(origin.x)/self.boardCellSize)
             }
-            if Double(origin.y) % Double(self.boardCellSize) > Double(self.boardCellSize)/2.0 {
+            if Double(origin.y).truncatingRemainder(dividingBy: Double(self.boardCellSize)) > Double(self.boardCellSize)/2.0 {
                 cellNumberY = (Int(origin.y)/self.boardCellSize) + 1
             } else {
                 cellNumberY = (Int(origin.y)/self.boardCellSize)
@@ -301,10 +301,10 @@ class ViewController: UIViewController {
     
     func placePiecesInPiecesView() {
         
-        if currentOrientation != UIDevice.currentDevice().orientation || piecesNeedPlaced {
+        if currentOrientation != UIDevice.current.orientation || piecesNeedPlaced {
             piecesNeedPlaced = false
             
-            let isPortraitOrientation = UIDevice.currentDevice().orientation.isPortrait.boolValue
+            let isPortraitOrientation = UIDevice.current.orientation.isPortrait
             
             let piecesViewNumCols : Int
             let piecesViewNumRows : Int
@@ -325,7 +325,7 @@ class ViewController: UIViewController {
             let onePieceAvailableX = piecesViewAvailableX/Double(piecesViewNumCols)
             let onePieceAvailableY = piecesViewAvailableY/Double(piecesViewNumRows)
         
-            for (i, piece) in self.pieces.enumerate() {
+            for (i, piece) in self.pieces.enumerated() {
                 let rowNum = i/piecesViewNumCols
                 let colNum = i%piecesViewNumCols
                 let x = piecesViewOutsideBuffer + onePieceAvailableX*Double(colNum) + onePieceAvailableX/2.0
@@ -337,19 +337,19 @@ class ViewController: UIViewController {
                 }
                 
             }
-            currentOrientation = UIDevice.currentDevice().orientation
+            currentOrientation = UIDevice.current.orientation
         }
     }
     
-    func setBoardButtonsEnabled(enabled: Bool) {
+    func setBoardButtonsEnabled(_ enabled: Bool) {
         for button in boardButtons {
-            button.enabled = enabled
+            button.isEnabled = enabled
         }
     }
     
     // MARK: - Button Iteractions
     //
-    @IBAction func boardButtonPressed(sender: UIButton) {
+    @IBAction func boardButtonPressed(_ sender: UIButton) {
         
         if isSolved {
             self.resetButtonPressed(resetButton)
@@ -358,13 +358,13 @@ class ViewController: UIViewController {
         boardNumber = sender.tag
         
         if boardNumber == 0 {
-            solveButton.enabled = false
-            resetButton.enabled = false
-            hintButton.enabled = false
+            solveButton.isEnabled = false
+            resetButton.isEnabled = false
+            hintButton.isEnabled = false
             hintPiecesShown = 0
         } else {
-            solveButton.enabled = true
-            hintButton.enabled = true
+            solveButton.isEnabled = true
+            hintButton.isEnabled = true
             hintPiecesShown = 0
         }
         
@@ -372,42 +372,42 @@ class ViewController: UIViewController {
 
     }
     
-    @IBAction func solveButtonPressed(sender: UIButton) {
+    @IBAction func solveButtonPressed(_ sender: UIButton) {
         
         hintPiecesShown = 0
         
         let delaySeconds = 0.2
         
-        let animationSeconds: NSTimeInterval = 1
+        let animationSeconds: TimeInterval = 1
         
-        solveButton.enabled = false
-        resetButton.enabled = false
-        hintButton.enabled = false
+        solveButton.isEnabled = false
+        resetButton.isEnabled = false
+        hintButton.isEnabled = false
         setBoardButtonsEnabled(false)
         
         piecesPlacedCounter = 0
         
-        for (i, piece) in pieces.enumerate() {
+        for (i, piece) in pieces.enumerated() {
             
-            let currentPointInSuperview = self.view.convertPoint(piece.getImageView().frame.origin , fromView: piece.getImageView().superview)
+            let currentPointInSuperview = self.view.convert(piece.getImageView().frame.origin , from: piece.getImageView().superview)
             piece.getImageView().frame.origin = currentPointInSuperview
             self.view.addSubview(piece.getImageView())
             
-            UIView.animateWithDuration(animationSeconds, delay: NSTimeInterval(Double(i)*delaySeconds), options: UIViewAnimationOptions.CurveEaseInOut, animations: {
+            UIView.animate(withDuration: animationSeconds, delay: TimeInterval(Double(i)*delaySeconds), options: UIViewAnimationOptions(), animations: {
                 if let solution = self.boardModel.solutionForBoardIndex(self.boardNumber, forPieceIndex: i),
                     let newX = solution.x,
                     let newY = solution.y,
                     let rotations = solution.rotations,
                     let flips = solution.flips {
                     
-                    piece.getImageView().transform = CGAffineTransformIdentity
+                    piece.getImageView().transform = CGAffineTransform.identity
                     
-                    piece.getImageView().transform = CGAffineTransformRotate(piece.getImageView().transform,CGFloat(Double(rotations)*M_PI/2.0))
+                    piece.getImageView().transform = piece.getImageView().transform.rotated(by: CGFloat(Double(rotations)*M_PI/2.0))
                     if (flips == 1) {
-                        piece.getImageView().transform = CGAffineTransformScale(piece.getImageView().transform,-1.0,1.0)
+                        piece.getImageView().transform = piece.getImageView().transform.scaledBy(x: -1.0,y: 1.0)
                     }
                     
-                    let boardPointInSuperview = self.boardImage.convertPoint(CGPoint(x: self.boardCellSize * newX, y: self.boardCellSize * newY),toView: self.view)
+                    let boardPointInSuperview = self.boardImage.convert(CGPoint(x: self.boardCellSize * newX, y: self.boardCellSize * newY),to: self.view)
                     
                     piece.getImageView().frame.origin = boardPointInSuperview
                     
@@ -417,7 +417,7 @@ class ViewController: UIViewController {
                 }
             }, completion: {(value: Bool) in
                 
-                let pointInBoardImage = self.boardImage.convertPoint(piece.getImageView().frame.origin, fromView: self.view)
+                let pointInBoardImage = self.boardImage.convert(piece.getImageView().frame.origin, from: self.view)
                 
                 piece.getImageView().frame.origin = pointInBoardImage
                 
@@ -427,7 +427,7 @@ class ViewController: UIViewController {
                 
                 if self.piecesPlacedCounter == self.pieces.count {
                     
-                    self.resetButton.enabled = true
+                    self.resetButton.isEnabled = true
                     self.setBoardButtonsEnabled(true)
                     self.isSolved = true
                 }
@@ -435,21 +435,21 @@ class ViewController: UIViewController {
         }
     }
 
-    @IBAction func resetButtonPressed(sender: UIButton) {
+    @IBAction func resetButtonPressed(_ sender: UIButton) {
         
         hintPiecesShown = 0
     
-        solveButton.enabled = false
-        resetButton.enabled = false
-        hintButton.enabled = false
+        solveButton.isEnabled = false
+        resetButton.isEnabled = false
+        hintButton.isEnabled = false
         
         setBoardButtonsEnabled(false)
         
-        let animationSeconds : NSTimeInterval = 1
+        let animationSeconds : TimeInterval = 1
         
         for piece in pieces {
             
-            let pointInSuperview = self.view.convertPoint(piece.getImageView().frame.origin, fromView: piece.getImageView().superview)
+            let pointInSuperview = self.view.convert(piece.getImageView().frame.origin, from: piece.getImageView().superview)
             
             piece.getImageView().frame.origin = pointInSuperview
             
@@ -459,25 +459,25 @@ class ViewController: UIViewController {
         
         for piece in pieces {
             
-            UIView.animateWithDuration(animationSeconds, animations: {
+            UIView.animate(withDuration: animationSeconds, animations: {
 
-                piece.getImageView().transform = CGAffineTransformIdentity
+                piece.getImageView().transform = CGAffineTransform.identity
                 
                 piece.resetManualTransformations()
 
-                piece.getImageView().center = self.view.convertPoint(piece.originalPoint, fromView: self.piecesView)
+                piece.getImageView().center = self.view.convert(piece.originalPoint, from: self.piecesView)
                 
                 }, completion: {(value: Bool) in
                 
-                    let pointInPiecesView = self.piecesView.convertPoint(piece.getImageView().frame.origin, fromView: self.view)
+                    let pointInPiecesView = self.piecesView.convert(piece.getImageView().frame.origin, from: self.view)
                     
                     piece.getImageView().frame.origin = pointInPiecesView
                     
                     self.piecesView.addSubview(piece.getImageView())
                     
                     if self.boardNumber != 0 {
-                        self.solveButton.enabled = true
-                        self.hintButton.enabled = true
+                        self.solveButton.isEnabled = true
+                        self.hintButton.isEnabled = true
                     }
                     self.setBoardButtonsEnabled(true)
                     self.isSolved = false

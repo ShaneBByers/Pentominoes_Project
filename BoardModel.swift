@@ -11,9 +11,9 @@ import Foundation
 class BoardModel {
     let numberOfBoards = 6
     let pieceNames = Array(arrayLiteral: "F","I","L","N","P","T","U","V","W","X","Y","Z")
-    private var boardButtonFilenames = [String]()
-    private var boardFilenames = [String]()
-    private var pieceFilenames = [String]()
+    fileprivate var boardButtonFilenames = [String]()
+    fileprivate var boardFilenames = [String]()
+    fileprivate var pieceFilenames = [String]()
     
     struct Transformation {
         var x : Int?
@@ -22,7 +22,7 @@ class BoardModel {
         var flips : Int?
     }
     
-    private var transformations : [Int:[String:Transformation]] = [:]
+    fileprivate var transformations : [Int:[String:Transformation]] = [:]
     
     init() {
         for i in pieceNames {
@@ -35,12 +35,12 @@ class BoardModel {
         
         var solutionsArray = [[String:[String:Int]]]()
         
-        if let solutionsFilepath = NSBundle.mainBundle().pathForResource("Solutions", ofType: "plist"),
+        if let solutionsFilepath = Bundle.main.path(forResource: "Solutions", ofType: "plist"),
             let nsArray = NSArray(contentsOfFile: solutionsFilepath) {
             solutionsArray = Array(nsArray as! [[String:[String:Int]]])
         }
         
-        for (boardNumber, boardDictionary) in solutionsArray.enumerate() {
+        for (boardNumber, boardDictionary) in solutionsArray.enumerated() {
             var pieceSolutions : [String:Transformation] = [:]
             for pieceName in pieceNames {
                 if let transformation = boardDictionary[pieceName] {
@@ -60,7 +60,7 @@ class BoardModel {
         
     }
     
-    func solutionForBoardIndex(boardIndex: Int, forPieceIndex pieceIndex: Int) -> Transformation? {
+    func solutionForBoardIndex(_ boardIndex: Int, forPieceIndex pieceIndex: Int) -> Transformation? {
         let pieceName = pieceNames[pieceIndex]
         if let boardSolution = transformations[boardIndex],
             let transformation = boardSolution[pieceName] {
@@ -81,7 +81,7 @@ class BoardModel {
         return boardFilenames
     }
     
-    func boardFilenameAtIndex(index: Int) -> String {
+    func boardFilenameAtIndex(_ index: Int) -> String {
         return boardFilenames[index]
     }
     
@@ -89,7 +89,7 @@ class BoardModel {
         return numberOfBoards
     }
     
-    func pieceFilenameAtIndex(index: Int) -> String {
+    func pieceFilenameAtIndex(_ index: Int) -> String {
         return pieceFilenames[index]
     }
     

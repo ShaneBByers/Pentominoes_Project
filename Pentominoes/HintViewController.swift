@@ -12,15 +12,15 @@ class HintViewController: UIViewController {
     
     @IBOutlet weak var boardImage: UIImageView!
     
-    private var board : UIImage? = nil
+    fileprivate var board : UIImage? = nil
     
-    private var hintPieces : [UIImageView]? = nil
+    fileprivate var hintPieces : [UIImageView]? = nil
     
-    private var myBoardModel : BoardModel? = nil
+    fileprivate var myBoardModel : BoardModel? = nil
     
-    private var currentBoardIndex : Int = 0
+    fileprivate var currentBoardIndex : Int = 0
     
-    private let boardCellSize : Int = 30
+    fileprivate let boardCellSize : Int = 30
     
     var dismissCompletionBlock : (() -> Void)?
     
@@ -33,17 +33,17 @@ class HintViewController: UIViewController {
     func placePiecesOnBoard() {
         if let pieces = hintPieces,
             let boardModel = myBoardModel {
-            for (i, piece) in pieces.enumerate() {
+            for (i, piece) in pieces.enumerated() {
                 self.boardImage.addSubview(piece)
                 if let solution = boardModel.solutionForBoardIndex(currentBoardIndex, forPieceIndex: i),
                     let newX = solution.x,
                     let newY = solution.y,
                     let rotations = solution.rotations,
                     let flips = solution.flips {
-                    piece.transform = CGAffineTransformRotate(piece.transform, CGFloat(Double(rotations)*M_PI/2))
+                    piece.transform = piece.transform.rotated(by: CGFloat(Double(rotations)*M_PI/2))
                     
                     if flips == 1 {
-                        piece.transform = CGAffineTransformScale(piece.transform,-1.0,1.0)
+                        piece.transform = piece.transform.scaledBy(x: -1.0,y: 1.0)
                     }
                     
                     piece.frame.origin = CGPoint(x: self.boardCellSize * newX, y: self.boardCellSize * newY)
@@ -60,7 +60,7 @@ class HintViewController: UIViewController {
         }
     }
     
-    func configureWithBoard(aBoardImage: UIImage, atIndex boardIndex: Int, withPieces somePieces: [UIImageView], usingBoardModel aBoardModel: BoardModel) {
+    func configureWithBoard(_ aBoardImage: UIImage, atIndex boardIndex: Int, withPieces somePieces: [UIImageView], usingBoardModel aBoardModel: BoardModel) {
         currentBoardIndex = boardIndex
         board = aBoardImage
         hintPieces = somePieces
@@ -68,7 +68,7 @@ class HintViewController: UIViewController {
     }
     
 
-    @IBAction func dismissView(sender: UIButton) {
+    @IBAction func dismissView(_ sender: UIButton) {
         if let dismissCompletionBlock = dismissCompletionBlock {
             dismissCompletionBlock()
         }
