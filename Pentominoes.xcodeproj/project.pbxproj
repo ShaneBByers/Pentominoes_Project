@@ -115,8 +115,8 @@
 		4370A5AA1D88BFB100029BB7 /* tileX@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "tileX@2x.png"; path = "Assets.xcassets/tileX@2x.png"; sourceTree = "<group>"; };
 		4370A5AB1D88BFB100029BB7 /* tileY@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "tileY@2x.png"; path = "Assets.xcassets/tileY@2x.png"; sourceTree = "<group>"; };
 		4370A5AC1D88BFB100029BB7 /* tileZ@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "tileZ@2x.png"; path = "Assets.xcassets/tileZ@2x.png"; sourceTree = "<group>"; };
-		43F0A1CC1D88CB0E00EEC362 /* BoardModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoardModel.swift; sourceTree = "<group>"; };
-		43F0A1CE1D88D2DF00EEC362 /* Piece.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Piece.swift; sourceTree = "<group>"; };
+		43F0A1CC1D88CB0E00EEC362 /* BoardModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BoardModel.swift; path = ../BoardModel.swift; sourceTree = "<group>"; };
+		43F0A1CE1D88D2DF00EEC362 /* Piece.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Piece.swift; path = ../Piece.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -137,11 +137,77 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		4370A4CC1D88B9AE00029BB7 = {
+		435DC2F01E3787280047FD47 /* Board Images */ = {
+			isa = PBXGroup;
+			children = (
+				4370A5941D88BFB100029BB7 /* Board0.png */,
+				4370A5951D88BFB100029BB7 /* Board0button.png */,
+				4370A5961D88BFB100029BB7 /* Board1@2x.png */,
+				4370A5971D88BFB100029BB7 /* Board1button.png */,
+				4370A5981D88BFB100029BB7 /* Board2@2x.png */,
+				4370A5991D88BFB100029BB7 /* Board2button.png */,
+				4370A59A1D88BFB100029BB7 /* Board3@2x.png */,
+				4370A59B1D88BFB100029BB7 /* Board3button.png */,
+				4370A59C1D88BFB100029BB7 /* Board4@2x.png */,
+				4370A59D1D88BFB100029BB7 /* Board4button.png */,
+				4370A59E1D88BFB100029BB7 /* Board5@2x.png */,
+				4370A59F1D88BFB100029BB7 /* Board5button.png */,
+			);
+			name = "Board Images";
+			sourceTree = "<group>";
+		};
+		435DC2F11E3787310047FD47 /* Tile Images */ = {
+			isa = PBXGroup;
+			children = (
+				4370A5A11D88BFB100029BB7 /* tileF@2x.png */,
+				4370A5A21D88BFB100029BB7 /* tileI@2x.png */,
+				4370A5A31D88BFB100029BB7 /* tileL@2x.png */,
+				4370A5A41D88BFB100029BB7 /* tileN@2x.png */,
+				4370A5A51D88BFB100029BB7 /* tileP@2x.png */,
+				4370A5A61D88BFB100029BB7 /* tileT@2x.png */,
+				4370A5A71D88BFB100029BB7 /* tileU@2x.png */,
+				4370A5A81D88BFB100029BB7 /* tileV@2x.png */,
+				4370A5A91D88BFB100029BB7 /* tileW@2x.png */,
+				4370A5AA1D88BFB100029BB7 /* tileX@2x.png */,
+				4370A5AB1D88BFB100029BB7 /* tileY@2x.png */,
+				4370A5AC1D88BFB100029BB7 /* tileZ@2x.png */,
+			);
+			name = "Tile Images";
+			sourceTree = "<group>";
+		};
+		435DC2F21E37874E0047FD47 /* Supporting */ = {
+			isa = PBXGroup;
+			children = (
+				4370A4D81D88B9AE00029BB7 /* AppDelegate.swift */,
+				4370A4DF1D88B9AE00029BB7 /* Assets.xcassets */,
+				4370A5A01D88BFB100029BB7 /* Solutions.plist */,
+				4370A4E11D88B9AE00029BB7 /* LaunchScreen.storyboard */,
+				4370A4E41D88B9AE00029BB7 /* Info.plist */,
+			);
+			name = Supporting;
+			sourceTree = "<group>";
+		};
+		435DC2F31E37877A0047FD47 /* Model */ = {
 			isa = PBXGroup;
 			children = (
 				43F0A1CC1D88CB0E00EEC362 /* BoardModel.swift */,
 				43F0A1CE1D88D2DF00EEC362 /* Piece.swift */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		435DC2F41E3787860047FD47 /* View Controller */ = {
+			isa = PBXGroup;
+			children = (
+				4370A4DA1D88B9AE00029BB7 /* ViewController.swift */,
+				4364DFB91D96F63700AEEABE /* HintViewController.swift */,
+			);
+			name = "View Controller";
+			sourceTree = "<group>";
+		};
+		4370A4CC1D88B9AE00029BB7 = {
+			isa = PBXGroup;
+			children = (
 				4370A4D71D88B9AE00029BB7 /* Pentominoes */,
 				4370A4EC1D88B9AF00029BB7 /* PentominoesTests */,
 				4370A4D61D88B9AE00029BB7 /* Products */,
@@ -160,38 +226,12 @@
 		4370A4D71D88B9AE00029BB7 /* Pentominoes */ = {
 			isa = PBXGroup;
 			children = (
-				4370A4D81D88B9AE00029BB7 /* AppDelegate.swift */,
-				4370A4DA1D88B9AE00029BB7 /* ViewController.swift */,
 				4370A4DC1D88B9AE00029BB7 /* Main.storyboard */,
-				4364DFB91D96F63700AEEABE /* HintViewController.swift */,
-				4370A4DF1D88B9AE00029BB7 /* Assets.xcassets */,
-				4370A5941D88BFB100029BB7 /* Board0.png */,
-				4370A5951D88BFB100029BB7 /* Board0button.png */,
-				4370A5961D88BFB100029BB7 /* Board1@2x.png */,
-				4370A5971D88BFB100029BB7 /* Board1button.png */,
-				4370A5981D88BFB100029BB7 /* Board2@2x.png */,
-				4370A5991D88BFB100029BB7 /* Board2button.png */,
-				4370A59A1D88BFB100029BB7 /* Board3@2x.png */,
-				4370A59B1D88BFB100029BB7 /* Board3button.png */,
-				4370A59C1D88BFB100029BB7 /* Board4@2x.png */,
-				4370A59D1D88BFB100029BB7 /* Board4button.png */,
-				4370A59E1D88BFB100029BB7 /* Board5@2x.png */,
-				4370A59F1D88BFB100029BB7 /* Board5button.png */,
-				4370A5A01D88BFB100029BB7 /* Solutions.plist */,
-				4370A5A11D88BFB100029BB7 /* tileF@2x.png */,
-				4370A5A21D88BFB100029BB7 /* tileI@2x.png */,
-				4370A5A31D88BFB100029BB7 /* tileL@2x.png */,
-				4370A5A41D88BFB100029BB7 /* tileN@2x.png */,
-				4370A5A51D88BFB100029BB7 /* tileP@2x.png */,
-				4370A5A61D88BFB100029BB7 /* tileT@2x.png */,
-				4370A5A71D88BFB100029BB7 /* tileU@2x.png */,
-				4370A5A81D88BFB100029BB7 /* tileV@2x.png */,
-				4370A5A91D88BFB100029BB7 /* tileW@2x.png */,
-				4370A5AA1D88BFB100029BB7 /* tileX@2x.png */,
-				4370A5AB1D88BFB100029BB7 /* tileY@2x.png */,
-				4370A5AC1D88BFB100029BB7 /* tileZ@2x.png */,
-				4370A4E11D88B9AE00029BB7 /* LaunchScreen.storyboard */,
-				4370A4E41D88B9AE00029BB7 /* Info.plist */,
+				435DC2F31E37877A0047FD47 /* Model */,
+				435DC2F41E3787860047FD47 /* View Controller */,
+				435DC2F01E3787280047FD47 /* Board Images */,
+				435DC2F11E3787310047FD47 /* Tile Images */,
+				435DC2F21E37874E0047FD47 /* Supporting */,
 			);
 			path = Pentominoes;
 			sourceTree = "<group>";

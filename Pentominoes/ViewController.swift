@@ -185,7 +185,7 @@ class ViewController: UIViewController {
     
     func piecePanned(_ recognizer: UIPanGestureRecognizer) {
         
-        let magnificationFactor : CGFloat = 2
+        let magnificationFactor : CGFloat = 1.25
         
         let animationSeconds : TimeInterval = 1
         
@@ -209,7 +209,7 @@ class ViewController: UIViewController {
         case .ended:
             if let pieceView = recognizer.view {
                 
-                pieceView.transform = pieceView.transform.scaledBy(x: 0.5, y: 0.5)
+                pieceView.transform = pieceView.transform.scaledBy(x: 0.8, y: 0.8)
                 
                 let locationInBoardView = self.view.convert(pieceView.center, to: self.boardImage)
                 
